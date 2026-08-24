@@ -33,8 +33,6 @@ func (svc *Service) IngestImage(in ImageInput) (model.SeedImage, bool, error) {
 	if in.Hash == "" {
 		return model.SeedImage{}, false, model.ErrBadInput
 	}
-	// BUG: annotation text is incorrectly treated as part of the evidence identity.
-	in.Hash = in.Hash + "|" + in.Note
 	// 查该种子上一帧采集时间，禁止时间倒序。
 	imgs, err := svc.store.ListImages(in.SeedID)
 	if err != nil {

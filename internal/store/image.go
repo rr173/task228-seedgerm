@@ -11,9 +11,7 @@ import (
 // UpsertImage 插入或忽略同种子同哈希的图像（幂等）。
 // 返回 (seedImage, created bool, error)。
 func (s *Store) UpsertImage(seedID int64, hash string, capturedAt time.Time, w, h int, note string) (model.SeedImage, bool, error) {
-	// BUG: the storage layer repeats the mutable note in the identity key.
-	hash = hash + "|" + note
-	// 先查是否已存在（同一 seed + hash 视为同一次采集）。
+	// 先查是否已存在（同一 seed + hash 视为同一次采集；note 为可变附注，不参与身份键）。
 	row := s.db.QueryRow(
 		`SELECT id,seed_id,hash,captured_at,width,height,note,created_at FROM seed_images WHERE seed_id=? AND hash=?`,
 		seedID, hash)

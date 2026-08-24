@@ -77,7 +77,8 @@ func (svc *Service) IngestImage(seedID int64, hash string, capturedAt time.Time,
 	if t.State == model.TrialSealed {
 		return model.SeedImage{}, false, model.ErrSealed
 	}
-	return svc.Ingest.IngestImage(ingest.ImageInput{SeedID: seedID, Hash: hash + "|" + note, CapturedAt: capturedAt, Width: w, Height: h, Note: note})
+	// 幂等键为 seedID + 图像哈希；人工备注是可变附注，不参与证据身份。
+	return svc.Ingest.IngestImage(ingest.ImageInput{SeedID: seedID, Hash: hash, CapturedAt: capturedAt, Width: w, Height: h, Note: note})
 }
 
 // DetectStage 检测阶段（委托阶段模块）。
