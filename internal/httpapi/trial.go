@@ -43,32 +43,6 @@ func (s *Server) handleTrials(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleTrialByID 处理 /api/trials/:id 及其子资源。
-func (s *Server) handleTrialByID(w http.ResponseWriter, r *http.Request) {
-	id, ok := parseID(r.URL.Path, "/api/trials/")
-	if !ok {
-		writeError(w, http.StatusBadRequest, model.ErrBadInput)
-		return
-	}
-	rem := remaining(r.URL.Path, "/api/trials/")
-	switch rem {
-	case "":
-		s.trialDetail(w, r, id)
-	case "seeds":
-		s.trialSeeds(w, r, id)
-	case "env":
-		s.trialEnv(w, r, id)
-	case "results":
-		s.trialResults(w, r, id)
-	case "summarize":
-		s.trialSummarize(w, r, id)
-	case "transition":
-		s.trialTransition(w, r, id)
-	default:
-		writeError(w, http.StatusNotFound, model.ErrNotFound)
-	}
-}
-
 // trialDetail GET 试验详情。
 func (s *Server) trialDetail(w http.ResponseWriter, r *http.Request, id int64) {
 	if r.Method != http.MethodGet {

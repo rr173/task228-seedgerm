@@ -8,28 +8,6 @@ import (
 	"task228-seedgerm/internal/model"
 )
 
-// handleSeeds 处理 /api/seeds/:id 及其子资源（images / observations / detect）。
-func (s *Server) handleSeeds(w http.ResponseWriter, r *http.Request) {
-	id, ok := parseID(r.URL.Path, "/api/seeds/")
-	if !ok {
-		writeError(w, http.StatusBadRequest, model.ErrBadInput)
-		return
-	}
-	rem := remaining(r.URL.Path, "/api/seeds/")
-	switch {
-	case rem == "":
-		s.seedDetail(w, r, id)
-	case rem == "images":
-		s.seedImages(w, r, id)
-	case rem == "observations":
-		s.seedObservations(w, r, id)
-	case rem == "detect":
-		s.seedDetect(w, r, id)
-	default:
-		writeError(w, http.StatusNotFound, model.ErrNotFound)
-	}
-}
-
 // seedDetail GET 种子详情。
 func (s *Server) seedDetail(w http.ResponseWriter, r *http.Request, id int64) {
 	if r.Method != http.MethodGet {

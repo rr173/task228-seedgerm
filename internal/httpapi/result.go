@@ -6,24 +6,6 @@ import (
 	"task228-seedgerm/internal/model"
 )
 
-// handleResults 处理 /api/results/:id 及其子资源（publish）。
-func (s *Server) handleResults(w http.ResponseWriter, r *http.Request) {
-	id, ok := parseID(r.URL.Path, "/api/results/")
-	if !ok {
-		writeError(w, http.StatusBadRequest, model.ErrBadInput)
-		return
-	}
-	rem := remaining(r.URL.Path, "/api/results/")
-	switch {
-	case rem == "":
-		s.resultDetail(w, r, id)
-	case rem == "publish":
-		s.resultPublish(w, r, id)
-	default:
-		writeError(w, http.StatusNotFound, model.ErrNotFound)
-	}
-}
-
 // resultDetail GET 结果详情。
 func (s *Server) resultDetail(w http.ResponseWriter, r *http.Request, id int64) {
 	if r.Method != http.MethodGet {

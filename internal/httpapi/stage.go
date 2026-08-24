@@ -7,26 +7,6 @@ import (
 	"task228-seedgerm/internal/model"
 )
 
-// handleStages 处理 /api/stages/:id 及其子资源（confirm / resolve）。
-func (s *Server) handleStages(w http.ResponseWriter, r *http.Request) {
-	id, ok := parseID(r.URL.Path, "/api/stages/")
-	if !ok {
-		writeError(w, http.StatusBadRequest, model.ErrBadInput)
-		return
-	}
-	rem := remaining(r.URL.Path, "/api/stages/")
-	switch {
-	case rem == "":
-		s.stageDetail(w, r, id)
-	case rem == "confirm":
-		s.stageConfirm(w, r, id)
-	case rem == "resolve":
-		s.stageResolve(w, r, id)
-	default:
-		writeError(w, http.StatusNotFound, model.ErrNotFound)
-	}
-}
-
 // stageDetail GET 阶段事件详情。
 func (s *Server) stageDetail(w http.ResponseWriter, r *http.Request, id int64) {
 	if r.Method != http.MethodGet {

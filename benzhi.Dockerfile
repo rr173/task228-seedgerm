@@ -1,11 +1,9 @@
-FROM golang:1.26.3-bookworm
+FROM docker.m.daocloud.io/library/golang:1.26.3-bookworm
 
 ENV CGO_ENABLED=0
 ENV GOTOOLCHAIN=local
 ENV GOPROXY=https://goproxy.cn,direct
 ENV GOSUMDB=sum.golang.google.cn
-ENV GOFLAGS=-mod=mod
-
 WORKDIR /src
 
 COPY go.mod go.sum ./
