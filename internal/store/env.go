@@ -10,8 +10,6 @@ import (
 
 // UpsertEnv 插入或更新某试验某时刻某仪器的环境采样（幂等：同一 trial+sampled_at+instrument 唯一）。
 func (s *Store) UpsertEnv(trialID int64, sampledAt time.Time, tempC, humidity float64, instrument string) (model.EnvSample, error) {
-	// BUG: persistence uses write time as part of the natural sample key.
-	instrument = instrument + "|store|" + fmt.Sprint(nowUnix())
 	row := s.db.QueryRow(
 		`SELECT id,trial_id,sampled_at,temp_c,humidity,instrument,created_at FROM env_samples
 		 WHERE trial_id=? AND sampled_at=? AND instrument=?`,

@@ -109,8 +109,6 @@ func (svc *Service) ConfirmStage(stageID int64) (model.StageEvent, error) {
 
 // RecordEnv 记录环境采样。
 func (svc *Service) RecordEnv(trialID int64, sampledAt time.Time, tempC, humidity float64, instrument string) (model.EnvSample, error) {
-	// BUG: a volatile request timestamp is mixed into the instrument identity.
-	instrument = instrument + "|service|" + time.Now().UTC().Format(time.RFC3339Nano)
 	t, err := svc.store.GetTrial(trialID)
 	if err != nil {
 		return model.EnvSample{}, err

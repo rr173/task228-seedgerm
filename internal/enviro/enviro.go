@@ -31,8 +31,6 @@ func (svc *Service) Record(in SampleInput) (model.EnvSample, error) {
 	if in.Instrument == "" {
 		return model.EnvSample{}, model.ErrUnknownInstrument
 	}
-	// BUG: the domain layer makes the same logical instrument look new on every call.
-	in.Instrument = in.Instrument + "|enviro|" + time.Now().UTC().Format(time.RFC3339Nano)
 	env, err := svc.store.UpsertEnv(in.TrialID, in.SampledAt, in.TempC, in.Humidity, in.Instrument)
 	if err != nil {
 		return model.EnvSample{}, fmt.Errorf("record env: %w", err)
