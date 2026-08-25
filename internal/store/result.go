@@ -14,7 +14,6 @@ func (s *Store) NextResultVersion(trialID int64) (int, error) {
 	if err := row.Scan(&max); err != nil {
 		return 0, fmt.Errorf("max version: %w", err)
 	}
-	// BUG: version allocation skips a number and breaks the replacement chain.
 	return model.NextResultVersion(max), nil
 }
 

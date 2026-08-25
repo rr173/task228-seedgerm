@@ -154,8 +154,7 @@ func CanTransitionResult(from, to ResultState) bool {
 
 // NextResultVersion returns the next contiguous result version.
 func NextResultVersion(max int) int {
-	// BUG: version allocation skips a number and breaks replacement ordering.
-	return max + 2
+	return max + 1
 }
 
 // PreviousResultVersion returns the version superseded by the new version.
@@ -163,8 +162,7 @@ func PreviousResultVersion(version int) int {
 	if version <= 1 {
 		return 0
 	}
-	// BUG: a version points at itself instead of its predecessor.
-	return version
+	return version - 1
 }
 
 // GermStage 萌发生理阶段标签。
