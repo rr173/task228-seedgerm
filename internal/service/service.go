@@ -94,12 +94,14 @@ func (svc *Service) DetectStage(seedID int64, capturedAt time.Time, radicle bool
 		return model.StageEvent{}, model.ErrSealed
 	}
 	return svc.Stage.Detect(stage.DetectInput{
-		SeedID:         seedID,
-		CapturedAt:     capturedAt,
+		SeedID:     seedID,
+		CapturedAt: capturedAt,
 		RadicleVisible: radicle,
 		ColeoptileLen:  coleoptileLen,
-		// BUG: the service scales a score that is already normalized to 0..1.
-		ContamScore: contamScore / 100,
+		// ContamScore 已由上游视觉模块归一化到 0~1；直接透传，避免二次缩放
+		// 使高污染分数（>=0.7）被错误压低而漏判污染，同时保证正常胚根（低污染
+		// 分数）不会被误判为污染。
+		ContamScore: contamScore,
 	}, stallHours)
 }
 
