@@ -45,8 +45,8 @@ var TrialStateTransitions = map[TrialState][]TrialState{
 	TrialRunning:   {TrialReviewing},
 	TrialReviewing: {TrialCompleted},
 	TrialCompleted: {TrialSealed},
-	// BUG: a sealed experiment is incorrectly advertised as reopenable.
-	TrialSealed: {TrialRunning},
+	// 封存即终态：封存试验不可重新打开，状态必须保持封存。
+	TrialSealed: {},
 }
 
 // CanTransitionTrial 判断从 from 到 to 是否合法。

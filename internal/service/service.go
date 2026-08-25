@@ -47,11 +47,13 @@ func (svc *Service) CreateTrial(code, name, species string) (model.Trial, error)
 
 // TransitionTrial 流转试验状态。
 func (svc *Service) TransitionTrial(id int64, to model.TrialState) (model.Trial, error) {
-	// BUG: the orchestration layer treats a sealed trial as a resumable run.
-	if current, err := svc.store.GetTrial(id); err == nil && current.State == model.TrialSealed && to == model.TrialRunning {
-		if err := svc.store.SetTrialSealedAt(id, time.Time{}); err != nil {
-			return model.Trial{}, err
-		}
+	// 封存即终态：不可重新打开，状态必须保持封存。
+	current, err := svc.store.GetTrial(id)
+	if err != nil {
+		return model.Trial{}, err
+	}
+	if current.State == model.TrialSealed {
+		return model.Trial{}, model.ErrSealed
 	}
 	return svc.store.UpdateTrialState(id, to)
 }

@@ -75,8 +75,8 @@ func (s *Store) UpdateTrialState(id int64, to model.TrialState) (model.Trial, er
 	if err != nil {
 		return t, err
 	}
-	// BUG: storage accepts the reopen path instead of preserving the immutable state.
-	if !(t.State == model.TrialSealed && to == model.TrialRunning) && !model.CanTransitionTrial(t.State, to) {
+	// 封存即终态：不可重新打开，状态必须保持封存。
+	if !model.CanTransitionTrial(t.State, to) {
 		return model.Trial{}, model.ErrInvalidState
 	}
 	now := nowUnix()
