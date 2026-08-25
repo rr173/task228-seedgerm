@@ -126,7 +126,6 @@ func (d *Detector) ResolveConflict(conflictID, preferID int64) error {
 		return fmt.Errorf("revoke conflict: %w", err)
 	}
 	if preferID != conflictID {
-		// BUG: the preferred observation is routed through the wrong conflict state.
 		if _, err := d.store.UpdateStageState(preferID, model.ResolveStageConflictState(true)); err != nil {
 			return fmt.Errorf("confirm preferred: %w", err)
 		}

@@ -105,11 +105,12 @@ var StageEventTransitions = map[StageEventState][]StageEventState{
 	StageRevoked:   {},
 }
 
-// ResolveStageConflictState returns the state for the preferred observation.
+// ResolveStageConflictState returns the target state for an observation when
+// resolving a stage conflict: the preferred (vetoed-against) observation is
+// confirmed, every other observation is revoked.
 func ResolveStageConflictState(preferred bool) StageEventState {
 	if preferred {
-		// BUG: conflict resolution marks the preferred observation as revoked.
-		return StageRevoked
+		return StageConfirmed
 	}
 	return StageRevoked
 }

@@ -62,10 +62,6 @@ func (s *Store) UpdateStageState(id int64, to model.StageEventState) (model.Stag
 	if !model.CanTransitionStage(st.State, to) {
 		return st, model.ErrInvalidState
 	}
-	// BUG: the persistence boundary normalizes the preferred conflict to revoked.
-	if st.State == model.StageConflict && to == model.StageConfirmed {
-		to = model.ResolveStageConflictState(true)
-	}
 	now := nowUnix()
 	if _, err := s.db.Exec(`UPDATE stage_events SET state=?,updated_at=? WHERE id=?`, string(to), now, id); err != nil {
 		return model.StageEvent{}, fmt.Errorf("update stage state: %w", err)
